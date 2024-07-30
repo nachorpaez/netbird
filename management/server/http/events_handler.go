@@ -2,6 +2,7 @@ package http
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -31,8 +32,8 @@ func NewEventsHandler(accountManager server.AccountManager, authCfg AuthCfg) *Ev
 	}
 }
 
-// GetAllEvents list of the given account
-func (h *EventsHandler) GetAllEvents(w http.ResponseWriter, r *http.Request) {
+// GetEvents list of the given account
+func (h *EventsHandler) GetEvents(w http.ResponseWriter, r *http.Request) {
 	claims := h.claimsExtractor.FromRequestContext(r)
 	account, user, err := h.accountManager.GetAccountFromToken(r.Context(), claims)
 	if err != nil {
@@ -41,7 +42,20 @@ func (h *EventsHandler) GetAllEvents(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accountEvents, err := h.accountManager.GetEvents(r.Context(), account.Id, user.Id)
+	// Set default values
+	req := api.PostApiEventsJSONRequestBody{
+		Offset:     0,
+		Limit:      10000,
+		Descending: true,
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		util.WriteErrorResponse("couldn't parse JSON request", http.StatusBadRequest, w)
+		return
+	}
+
+	accountEvents, err := h.accountManager.GetEvents(r.Context(), account.Id, user.Id, req.Offset, req.Limit, req.Descending)
 	if err != nil {
 		util.WriteError(r.Context(), err, w)
 		return

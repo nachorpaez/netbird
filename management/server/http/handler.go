@@ -207,7 +207,7 @@ func (apiHandler *apiHandler) addDNSSettingEndpoint() {
 
 func (apiHandler *apiHandler) addEventsEndpoint() {
 	eventsHandler := NewEventsHandler(apiHandler.AccountManager, apiHandler.AuthCfg)
-	apiHandler.Router.HandleFunc("/events", eventsHandler.GetAllEvents).Methods("GET", "OPTIONS")
+	apiHandler.Router.HandleFunc("/events", eventsHandler.GetEvents).Methods("POST", "OPTIONS")
 }
 
 func (apiHandler *apiHandler) addPostureCheckEndpoint() {

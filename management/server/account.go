@@ -117,7 +117,7 @@ type AccountManager interface {
 	ListNameServerGroups(ctx context.Context, accountID string, userID string) ([]*nbdns.NameServerGroup, error)
 	GetDNSDomain() string
 	StoreEvent(ctx context.Context, initiatorID, targetID, accountID string, activityID activity.ActivityDescriber, meta map[string]any)
-	GetEvents(ctx context.Context, accountID, userID string) ([]*activity.Event, error)
+	GetEvents(ctx context.Context, accountID, userID string, offset int, limit int, descending bool) ([]*activity.Event, error)
 	GetDNSSettings(ctx context.Context, accountID string, userID string) (*DNSSettings, error)
 	SaveDNSSettings(ctx context.Context, accountID string, userID string, dnsSettingsToSave *DNSSettings) error
 	GetPeer(ctx context.Context, accountID, peerID, userID string) (*nbpeer.Peer, error)

@@ -1201,6 +1201,18 @@ type GetApiUsersParams struct {
 	ServiceUser *bool `form:"service_user,omitempty" json:"service_user,omitempty"`
 }
 
+// EventsRequest defines model for EventsRequest.
+type EventsRequest struct {
+	// Limit Number of events to return per request.
+	Limit int `json:"limit"`
+
+	// Offset Offset of the events to return.
+	Offset int `json:"offset"`
+	
+	// Descending If set to true then events are fetched in descending order.
+	Descending bool `json:"descending"`
+}
+
 // PutApiAccountsAccountIdJSONRequestBody defines body for PutApiAccountsAccountId for application/json ContentType.
 type PutApiAccountsAccountIdJSONRequestBody = AccountRequest
 
@@ -1254,3 +1266,6 @@ type PutApiUsersUserIdJSONRequestBody = UserRequest
 
 // PostApiUsersUserIdTokensJSONRequestBody defines body for PostApiUsersUserIdTokens for application/json ContentType.
 type PostApiUsersUserIdTokensJSONRequestBody = PersonalAccessTokenRequest
+
+// PostApiEventsJSONRequestBody defines body for PostApiEventsJSONRequestBody for application/json ContentType.
+type PostApiEventsJSONRequestBody = EventsRequest

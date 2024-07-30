@@ -12,7 +12,7 @@ import (
 )
 
 // GetEvents returns a list of activity events of an account
-func (am *DefaultAccountManager) GetEvents(ctx context.Context, accountID, userID string) ([]*activity.Event, error) {
+func (am *DefaultAccountManager) GetEvents(ctx context.Context, accountID, userID string, offset int, limit int, descending bool) ([]*activity.Event, error) {
 	unlock := am.Store.AcquireAccountWriteLock(ctx, accountID)
 	defer unlock()
 
@@ -30,7 +30,7 @@ func (am *DefaultAccountManager) GetEvents(ctx context.Context, accountID, userI
 		return nil, status.Errorf(status.PermissionDenied, "only users with admin power can view events")
 	}
 
-	events, err := am.eventStore.Get(ctx, accountID, 0, 10000, true)
+	events, err := am.eventStore.Get(ctx, accountID, offset, limit, descending)
 	if err != nil {
 		return nil, err
 	}
