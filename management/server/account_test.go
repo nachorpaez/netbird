@@ -1358,7 +1358,7 @@ func getEvent(t *testing.T, accountID string, manager AccountManager, eventType 
 		case <-time.After(time.Second):
 			t.Fatal("no PeerAddedWithSetupKey event was generated")
 		default:
-			events, err := manager.GetEvents(context.Background(), accountID, userID)
+			events, err := manager.GetEvents(context.Background(), accountID, userID, 0, 10000, true)
 			if err != nil {
 				t.Fatal(err)
 			}

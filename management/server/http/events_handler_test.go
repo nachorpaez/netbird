@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -23,7 +24,7 @@ import (
 func initEventsTestData(account string, user *server.User, events ...*activity.Event) *EventsHandler {
 	return &EventsHandler{
 		accountManager: &mock_server.MockAccountManager{
-			GetEventsFunc: func(_ context.Context, accountID, userID string) ([]*activity.Event, error) {
+			GetEventsFunc: func(_ context.Context, accountID, userID string, offset int, limit int, descending bool) ([]*activity.Event, error) {
 				if accountID == account {
 					return events, nil
 				}
@@ -191,9 +192,10 @@ func TestEvents_GetEvents(t *testing.T) {
 		{
 			name:           "GetAllEvents OK",
 			expectedBody:   true,
-			requestType:    http.MethodGet,
+			requestType:    http.MethodPost,
 			requestPath:    "/api/events/",
 			expectedStatus: http.StatusOK,
+			requestBody:    strings.NewReader(`{}`),
 		},
 	}
 	accountID := "test_account"
@@ -207,7 +209,7 @@ func TestEvents_GetEvents(t *testing.T) {
 			req := httptest.NewRequest(tc.requestType, tc.requestPath, tc.requestBody)
 
 			router := mux.NewRouter()
-			router.HandleFunc("/api/events/", handler.GetAllEvents).Methods("GET")
+			router.HandleFunc("/api/events/", handler.GetEvents).Methods("POST")
 			router.ServeHTTP(recorder, req)
 
 			res := recorder.Result()

@@ -82,7 +82,7 @@ type MockAccountManager struct {
 	DeleteAccountFunc                   func(ctx context.Context, accountID, userID string) error
 	GetDNSDomainFunc                    func() string
 	StoreEventFunc                      func(ctx context.Context, initiatorID, targetID, accountID string, activityID activity.ActivityDescriber, meta map[string]any)
-	GetEventsFunc                       func(ctx context.Context, accountID, userID string) ([]*activity.Event, error)
+	GetEventsFunc                       func(ctx context.Context, accountID, userID string, offset int, limit int, descending bool) ([]*activity.Event, error)
 	GetDNSSettingsFunc                  func(ctx context.Context, accountID, userID string) (*server.DNSSettings, error)
 	SaveDNSSettingsFunc                 func(ctx context.Context, accountID, userID string, dnsSettingsToSave *server.DNSSettings) error
 	GetPeerFunc                         func(ctx context.Context, accountID, peerID, userID string) (*nbpeer.Peer, error)
@@ -617,9 +617,9 @@ func (am *MockAccountManager) GetDNSDomain() string {
 }
 
 // GetEvents mocks GetEvents of the AccountManager interface
-func (am *MockAccountManager) GetEvents(ctx context.Context, accountID, userID string) ([]*activity.Event, error) {
+func (am *MockAccountManager) GetEvents(ctx context.Context, accountID, userID string, offset int, limit int, descending bool) ([]*activity.Event, error) {
 	if am.GetEventsFunc != nil {
-		return am.GetEventsFunc(ctx, accountID, userID)
+		return am.GetEventsFunc(ctx, accountID, userID, offset, limit, descending)
 	}
 	return nil, status.Errorf(codes.Unimplemented, "method GetEvents is not implemented")
 }
